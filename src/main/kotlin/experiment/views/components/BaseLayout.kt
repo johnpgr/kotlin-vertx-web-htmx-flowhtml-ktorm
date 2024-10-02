@@ -1,4 +1,4 @@
-package experiment
+package experiment.views.components
 
 import htmlflow.*
 import org.xmlet.htmlapifaster.Html
@@ -11,14 +11,6 @@ fun HtmlPage.baseLayout(children: Html<HtmlPage>.() -> Unit): HtmlPage {
         }
         body {
             attrClass("bg-gray-900 text-white")
-            h1 { text("Hello, World!") }
-            div {
-                attrHxGet("/test-htmx")
-                attrHxTrigger("click")
-                attrHxSwap("outerHTML")
-                attrHxConfirm("Trigger this element?")
-                text("test_element")
-            }
             children()
         }
     }

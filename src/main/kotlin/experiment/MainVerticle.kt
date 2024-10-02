@@ -1,49 +1,37 @@
 package experiment
 
-import htmlflow.*
+import experiment.handlers.defaultHandler
+import experiment.handlers.indexHandler
+import experiment.handlers.testHtmxHandler
+import experiment.services.UserService
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.entity.find
 
 class MainVerticle : CoroutineVerticle() {
-    override suspend fun start() {
-        val database = Database.connect(
+    private lateinit var router: Router
+    private val database =
+        Database.connect(
             url = "jdbc:postgresql://localhost:5432/experiment",
             driver = "org.postgresql.Driver",
             user = "postgres",
             password = "postgres"
         )
-        val router = Router.router(vertx)
 
-        val testView = view<Unit> { div { text("Hello, test_element!") } }
-        val homePage =
-            view<User?> {
-                baseLayout {
-                    dyn { user: User? ->
-                        pre {
-                            text(user.toString())
-                        }
-                    }
-                }
-            }
-        val userTest = database.users.find { it.userName eq "TestUser" }
+    private fun initServices() {
+        UserService.init(database)
+    }
 
-        router.get("/").respond {
-            it.response().putHeader("Content-Type", "text/html").renderView(homePage, userTest)
-        }
+    private fun initRouter() {
+        router = Router.router(vertx)
+        router.get("/").respond { indexHandler(it) }
+        router.get("/test-htmx").respond { testHtmxHandler(it) }
+        router.route().handler { defaultHandler(it) }
+    }
 
-        router.get("/test-htmx").respond {
-            it.response().putHeader("Content-Type", "text/html").renderView(testView)
-        }
-
-        router.route().handler {
-            it.response()
-                .setStatusCode(404)
-                .putHeader("Content-Type", "text/html")
-                .end("<html><body>Not Found</body></html>")
-        }
+    override suspend fun start() {
+        initServices()
+        initRouter()
 
         vertx.createHttpServer().requestHandler(router).listen(3000).onComplete { http ->
             if (http.succeeded()) {
