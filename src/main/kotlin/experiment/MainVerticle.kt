@@ -1,8 +1,8 @@
 package experiment
 
-import experiment.handlers.defaultHandler
-import experiment.handlers.indexHandler
-import experiment.handlers.testHtmxHandler
+import experiment.handlers.DefaultHandler
+import experiment.handlers.IndexHandler
+import experiment.handlers.TestHTMXHandler
 import experiment.services.UserService
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.CoroutineVerticle
@@ -24,9 +24,12 @@ class MainVerticle : CoroutineVerticle() {
 
     private fun initRouter() {
         router = Router.router(vertx)
-        router.get("/").respond { indexHandler(it) }
-        router.get("/test-htmx").respond { testHtmxHandler(it) }
-        router.route().handler { defaultHandler(it) }
+        router.get("/").handler(IndexHandler)
+        router.get("/test-htmx").handler(TestHTMXHandler)
+        router.get("/test").handler { ctx ->
+            ctx.response().putHeader("content-type", "text/html").end("Hello, World")
+        }
+        router.route().handler(DefaultHandler)
     }
 
     override suspend fun start() {
