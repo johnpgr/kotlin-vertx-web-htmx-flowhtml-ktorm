@@ -3,7 +3,7 @@ package experiment.views.components
 import htmlflow.*
 import org.xmlet.htmlapifaster.Html
 
-fun HtmlPage.baseLayout(children: Html<HtmlPage>.() -> Unit): HtmlPage {
+fun HtmlPage.BaseLayout(children: Html<HtmlPage>.() -> Unit): HtmlPage {
     return html {
         head {
             script { attrSrc("https://cdn.tailwindcss.com") }

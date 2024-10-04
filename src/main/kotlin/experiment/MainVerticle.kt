@@ -4,6 +4,9 @@ import experiment.handlers.DefaultHandler
 import experiment.handlers.IndexHandler
 import experiment.handlers.TestHTMXHandler
 import experiment.services.UserService
+import experiment.services.PostService
+import experiment.entities.seed.seedUsers
+import experiment.entities.seed.seedPosts
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.ktorm.database.Database
@@ -20,21 +23,25 @@ class MainVerticle : CoroutineVerticle() {
 
     private fun initServices() {
         UserService.init(database)
+        PostService.init(database)
+    }
+
+    private fun seedDb() {
+        seedUsers(database)
+        seedPosts(database)
     }
 
     private fun initRouter() {
         router = Router.router(vertx)
         router.get("/").handler(IndexHandler)
         router.get("/test-htmx").handler(TestHTMXHandler)
-        router.get("/test").handler { ctx ->
-            ctx.response().putHeader("content-type", "text/html").end("Hello, World")
-        }
         router.route().handler(DefaultHandler)
     }
 
     override suspend fun start() {
         initServices()
         initRouter()
+        // seedDb()
 
         vertx.createHttpServer().requestHandler(router).listen(3000).onComplete { http ->
             if (http.succeeded()) {

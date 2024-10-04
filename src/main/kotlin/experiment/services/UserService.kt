@@ -6,6 +6,7 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
+import java.util.UUID
 
 object UserService {
     private lateinit var database: Database
@@ -14,7 +15,7 @@ object UserService {
         this.database = database
     }
 
-    fun getById(userId: String): User? {
+    fun getById(userId: UUID): User? {
         return database.users.find { it.id eq userId }
     }
 
