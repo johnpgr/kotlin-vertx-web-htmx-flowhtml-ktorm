@@ -4,7 +4,7 @@ import experiment.entities.Post
 import htmlflow.*
 import org.xmlet.htmlapifaster.Element
 
-fun <T : Element<T, Z>, Z : Element<*, *>> T.postItem(post: Post): T {
+fun <T : Element<T, Z>, Z : Element<*, *>> T.PostItem(post: Post): T {
     return li {
         attrClass("bg-white shadow rounded-md p-4")
         div {

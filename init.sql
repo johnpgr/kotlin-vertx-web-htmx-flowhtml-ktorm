@@ -2,11 +2,8 @@ CREATE TABLE IF NOT EXISTS "user"
 (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_name       VARCHAR NOT NULL UNIQUE,
-    email           VARCHAR NOT NULL UNIQUE,
     bio             VARCHAR,
-    avatar_url      VARCHAR,
-    hashed_password VARCHAR,
-    email_verified  BOOLEAN NOT NULL DEFAULT FALSE
+    hashed_password VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS "post"
@@ -58,8 +55,7 @@ CREATE TABLE IF NOT EXISTS "follow"
 
 ALTER TABLE "follow" ADD CONSTRAINT check_self_follow CHECK (follower_id != followed_id);
 
-CREATE INDEX idx_user_username ON "user" (username);
-CREATE INDEX idx_user_email ON "user" (email);
+CREATE INDEX idx_user_username ON "user" (user_name);
 
 CREATE INDEX idx_post_author_id ON "post" (author_id);
 CREATE INDEX idx_post_created_at ON "post" (created_at);

@@ -16,7 +16,10 @@ repositories {
 }
 
 val vertxVersion = "4.5.10"
+val htmlFlowVersion = "4.6"
+val ktormVersion = "4.1.1"
 val junitJupiterVersion = "5.9.1"
+val postgresqlVersion = "42.7.4"
 
 val mainVerticleName = "experiment.MainVerticle"
 val launcherClassName = "io.vertx.core.Launcher"
@@ -29,15 +32,17 @@ application {
 }
 
 dependencies {
-    implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
-    implementation("io.vertx:vertx-web")
-    implementation("io.vertx:vertx-lang-kotlin-coroutines")
-    implementation("io.vertx:vertx-lang-kotlin")
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.ongres.scram:client:2.1")
-    implementation("com.github.xmlet:htmlflow:4.6")
-    implementation("org.ktorm:ktorm-core:4.1.1")
-    implementation("org.postgresql:postgresql:42.7.4")
+    implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
+    implementation("io.vertx:vertx-auth-jwt:$vertxVersion")
+    implementation("io.vertx:vertx-web:$vertxVersion")
+    implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
+    implementation("io.vertx:vertx-lang-kotlin:$vertxVersion")
+    implementation("com.github.xmlet:htmlflow:$htmlFlowVersion")
+    implementation("org.ktorm:ktorm-core:$ktormVersion")
+    implementation("org.ktorm:ktorm-support-postgresql:$ktormVersion")
+    implementation("org.postgresql:postgresql:$postgresqlVersion")
+    implementation("org.mindrot:jbcrypt:0.4")
     testImplementation("io.vertx:vertx-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }

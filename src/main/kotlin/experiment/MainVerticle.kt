@@ -1,18 +1,20 @@
 package experiment
 
-import experiment.handlers.DefaultHandler
-import experiment.handlers.IndexHandler
-import experiment.handlers.TestHTMXHandler
-import experiment.services.UserService
-import experiment.services.PostService
-import experiment.entities.seed.seedUsers
 import experiment.entities.seed.seedPosts
+import experiment.entities.seed.seedUsers
+import experiment.handlers.AuthHandler
+import experiment.handlers.ViewsHandler
+import experiment.repositories.PostsRepository
+import experiment.repositories.UsersRepository
+import experiment.utils.JWTManager
 import io.vertx.ext.web.Router
+import io.vertx.ext.web.handler.StaticHandler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
+import io.vertx.kotlin.coroutines.coAwait
+import io.vertx.kotlin.coroutines.coroutineRouter
 import org.ktorm.database.Database
 
 class MainVerticle : CoroutineVerticle() {
-    private lateinit var router: Router
     private val database =
         Database.connect(
             url = "jdbc:postgresql://localhost:5432/experiment",
@@ -21,34 +23,40 @@ class MainVerticle : CoroutineVerticle() {
             password = "postgres"
         )
 
-    private fun initServices() {
-        UserService.init(database)
-        PostService.init(database)
-    }
-
     private fun seedDb() {
         seedUsers(database)
         seedPosts(database)
     }
 
-    private fun initRouter() {
-        router = Router.router(vertx)
-        router.get("/").handler(IndexHandler)
-        router.get("/test-htmx").handler(TestHTMXHandler)
-        router.route().handler(DefaultHandler)
+    private fun routes(): Router {
+        val usersRepository = UsersRepository(database)
+        val postsRepository = PostsRepository(database)
+        val viewsHandler = ViewsHandler(usersRepository,postsRepository)
+        val authHandler = AuthHandler(usersRepository)
+        val router = Router.router(vertx)
+
+        coroutineRouter {
+            router.route().coHandler(requestHandler = authHandler::middleware)
+        }
+
+        router.get("/").handler(viewsHandler::index)
+        router.get("/login").handler(viewsHandler::login)
+        router.get("/register").handler(viewsHandler::register)
+        router.post("/auth/signin").handler(authHandler::signIn)
+        router.post("/auth/signup").handler(authHandler::signUp)
+        router.route("/static/*").handler(StaticHandler.create())
+
+        return router
     }
 
     override suspend fun start() {
-        initServices()
-        initRouter()
-        // seedDb()
+        JWTManager.init(vertx)
 
-        vertx.createHttpServer().requestHandler(router).listen(3000).onComplete { http ->
-            if (http.succeeded()) {
-                println("HTTP server started on port 3000")
-            } else {
-                println("HTTP server failed to start")
-            }
-        }
+        vertx.createHttpServer()
+            .requestHandler(routes())
+            .listen(3000)
+            .onComplete {
+                println("HTTP server started on port ${it.result().actualPort()}")
+            }.coAwait()
     }
 }

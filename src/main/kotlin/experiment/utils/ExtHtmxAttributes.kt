@@ -1,5 +1,8 @@
 package experiment.utils
 
+import htmlflow.HtmlView
+import io.vertx.core.http.HttpServerResponse
+import io.vertx.ext.web.RoutingContext
 import org.xmlet.htmlapifaster.Element
 
 fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxGet(value: String): T {
@@ -19,6 +22,16 @@ fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxDelete(value: String): T {
 
 fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxTrigger(value: String): T {
     this.visitor.visitAttribute("hx-trigger", value);
+    return this.self()
+}
+
+fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxTarget(value: String): T {
+    this.visitor.visitAttribute("hx-target", value);
+    return this.self()
+}
+
+fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxTargetCustom(customTarget: String, value: String): T {
+    this.visitor.visitAttribute("hx-target-$customTarget", value);
     return this.self()
 }
 
@@ -171,3 +184,13 @@ fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxValidate(value: Boolean): T {
     this.visitor.visitAttribute("hx-validate", value.toString());
     return this.self()
 }
+
+fun HttpServerResponse.hxRedirect(value: String) {
+    statusCode = 302
+    putHeader("HX-Redirect", value).end()
+}
+
+fun <T> RoutingContext.render(view: HtmlView<T>, params: T) =
+    response().end(view.render(params))
+
+fun RoutingContext.render(view: HtmlView<Unit>) = response().end(view.render())
