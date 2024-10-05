@@ -1,8 +1,7 @@
 package experiment.views.components
-
 import org.xmlet.htmlapifaster.Element
 
-fun <T : Element<T, Z>, Z : Element<*, *>> T.UserIcon(): T {
+fun <T: Element<T, Z>, Z: Element<*, *>> T.UserIcon(): T {
     return raw("""
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -12,6 +11,6 @@ fun <T : Element<T, Z>, Z : Element<*, *>> T.UserIcon(): T {
             <path
               d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
         </svg>
-""".trimIndent()
-    )
+""".trimIndent())
 }
+

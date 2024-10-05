@@ -3,7 +3,8 @@ package experiment.views.components
 import org.xmlet.htmlapifaster.Element
 
 fun <T : Element<T, Z>, Z : Element<*, *>> T.PasswordIcon() {
-    raw("""
+  raw(
+    """
           <svg
                xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 16 16"
@@ -15,5 +16,6 @@ fun <T : Element<T, Z>, Z : Element<*, *>> T.PasswordIcon() {
                  clip-rule="evenodd" />
           </svg>
 """.trimIndent()
-    )
+  )
 }
+

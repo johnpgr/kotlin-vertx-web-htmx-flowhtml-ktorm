@@ -1,6 +1,8 @@
 ### Vert.x ###
 .vertx/
 
+node_modules/
+
 ### Eclipse ###
 
 .metadata

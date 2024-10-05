@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .border-border {
-    @apply input-bordered;
+  @apply input-bordered;
 }
