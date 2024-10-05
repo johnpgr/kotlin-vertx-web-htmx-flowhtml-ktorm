@@ -2,8 +2,8 @@ package experiment.views.components
 
 import org.xmlet.htmlapifaster.Element
 
-fun <T : Element<T, Z>, Z : Element<*, *>> T.PasswordIcon(): T {
-    return raw("""
+fun <T : Element<T, Z>, Z : Element<*, *>> T.PasswordIcon() {
+    raw("""
           <svg
                xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 16 16"

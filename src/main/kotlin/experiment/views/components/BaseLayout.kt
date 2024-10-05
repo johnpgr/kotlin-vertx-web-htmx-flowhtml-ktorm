@@ -1,7 +1,10 @@
 package experiment.views.components
 
+import experiment.entities.User
 import experiment.utils.attrHxBoost
 import experiment.utils.attrHxExt
+import experiment.utils.attrHxPost
+import experiment.utils.attrHxTarget
 import htmlflow.*
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.Html

@@ -34,7 +34,6 @@ application {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
-    implementation("io.vertx:vertx-auth-jwt:$vertxVersion")
     implementation("io.vertx:vertx-web:$vertxVersion")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
     implementation("io.vertx:vertx-lang-kotlin:$vertxVersion")

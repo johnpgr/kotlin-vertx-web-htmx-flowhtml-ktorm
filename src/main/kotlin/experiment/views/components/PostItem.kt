@@ -3,8 +3,10 @@ package experiment.views.components
 import experiment.entities.Post
 import htmlflow.*
 import org.xmlet.htmlapifaster.Element
+import org.xmlet.htmlapifaster.Li
+import org.xmlet.htmlapifaster.Ul
 
-fun <T : Element<T, Z>, Z : Element<*, *>> T.PostItem(post: Post): T {
+fun Ul<*>.PostItem(post: Post): Ul<*> {
     return li {
         attrClass("bg-white shadow rounded-md p-4")
         div {

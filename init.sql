@@ -5,6 +5,15 @@ CREATE TABLE IF NOT EXISTS "user"
     bio             VARCHAR,
     hashed_password VARCHAR
 );
+CREATE TABLE IF NOT EXISTS "session"
+(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    token TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS "post"
 (
@@ -16,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "post"
     body        VARCHAR NOT NULL,
     created_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES "user"(id)
+    FOREIGN KEY (author_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "comment"
@@ -27,8 +36,8 @@ CREATE TABLE IF NOT EXISTS "comment"
     body        VARCHAR NOT NULL,
     created_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (post_id) REFERENCES "post"(id),
-    FOREIGN KEY (author_id) REFERENCES "user"(id)
+    FOREIGN KEY (post_id) REFERENCES "post"(id) ON DELETE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "favorite"
@@ -37,8 +46,8 @@ CREATE TABLE IF NOT EXISTS "favorite"
     user_id     UUID NOT NULL,
     post_id     UUID NOT NULL,
     created_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES "user"(id),
-    FOREIGN KEY (post_id) REFERENCES "post"(id),
+    FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES "post"(id) ON DELETE CASCADE,
     UNIQUE (user_id, post_id)
 );
 
@@ -48,8 +57,8 @@ CREATE TABLE IF NOT EXISTS "follow"
     follower_id     UUID NOT NULL,
     followed_id     UUID NOT NULL,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (follower_id) REFERENCES "user"(id),
-    FOREIGN KEY (followed_id) REFERENCES "user"(id),
+    FOREIGN KEY (follower_id) REFERENCES "user"(id) ON DELETE CASCADE,
+    FOREIGN KEY (followed_id) REFERENCES "user"(id) ON DELETE CASCADE,
     UNIQUE (follower_id, followed_id)
 );
 

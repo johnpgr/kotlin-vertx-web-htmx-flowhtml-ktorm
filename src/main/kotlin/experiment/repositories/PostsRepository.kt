@@ -4,6 +4,7 @@ import experiment.entities.Post
 import experiment.entities.posts
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
+import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
 import java.util.*
@@ -19,5 +20,9 @@ class PostsRepository(private val database: Database) {
 
     fun findById(id: UUID): Post? {
         return database.posts.find { it.id eq id }
+    }
+
+    fun add(post: Post): Boolean {
+        return database.posts.add(post) == 1
     }
 }

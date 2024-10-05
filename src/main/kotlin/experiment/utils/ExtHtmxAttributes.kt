@@ -30,7 +30,10 @@ fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxTarget(value: String): T {
     return this.self()
 }
 
-fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxTargetCustom(customTarget: String, value: String): T {
+fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxTargetCustom(
+    customTarget: String,
+    value: String
+): T {
     this.visitor.visitAttribute("hx-target-$customTarget", value);
     return this.self()
 }
@@ -45,7 +48,10 @@ fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxSwapOob(value: String): T {
     return this.self()
 }
 
-fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxOn(event: String, value: String): T {
+fun <T : Element<T, Z>, Z : Element<*, *>> T.attrHxOn(
+    event: String,
+    value: String
+): T {
     this.visitor.visitAttribute("hx-on:$event", value);
     return this.self()
 }
@@ -190,7 +196,17 @@ fun HttpServerResponse.hxRedirect(value: String) {
     putHeader("HX-Redirect", value).end()
 }
 
-fun <T> RoutingContext.render(view: HtmlView<T>, params: T) =
-    response().end(view.render(params))
+fun <T> RoutingContext.render(view: HtmlView<T>, params: T) {
+    response()
+        .setContentType(ContentType.TEXT_HTML)
+        .setStatusCode(200)
+        .end(view.render(params))
+}
 
-fun RoutingContext.render(view: HtmlView<Unit>) = response().end(view.render())
+
+fun RoutingContext.render(view: HtmlView<Unit>) {
+    response()
+        .setContentType(ContentType.TEXT_HTML)
+        .setStatusCode(200)
+        .end(view.render())
+}

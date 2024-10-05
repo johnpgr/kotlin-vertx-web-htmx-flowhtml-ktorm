@@ -36,5 +36,4 @@ object Posts : Table<Post>("post") {
     val updatedAt = datetime("updated_at").bindTo { it.updatedAt }
 }
 
-val Database.posts
-    get() = this.sequenceOf(Posts)
+val Database.posts get() = this.sequenceOf(Posts)
