@@ -1,6 +1,6 @@
 package experiment.views
 
-import experiment.entities.User
+import experiment.entities.UserEntity
 import experiment.utils.attrHxExt
 import experiment.utils.attrHxTargetCustom
 import experiment.views.components.AuthInputs
@@ -10,9 +10,9 @@ import htmlflow.*
 import org.xmlet.htmlapifaster.EnumMethodType
 import org.xmlet.htmlapifaster.EnumTypeButtonType
 
-val RegisterView = view<User?> {
+val RegisterView = view<UserEntity?> {
   BaseLayout {
-    dyn { user: User? ->
+    dyn { user: UserEntity? ->
       Header(user)
       main {
         attrClass("min-h-[calc(100vh-80px)] w-full flex justify-center items-center")
@@ -21,7 +21,9 @@ val RegisterView = view<User?> {
           attrAction("/auth/signup")
           attrMethod(EnumMethodType.POST)
           attrHxExt("response-targets")
-          attrHxTargetCustom("error", "#any-errors")
+          attrHxTargetCustom("400", "#any-errors")
+          attrHxTargetCustom("401", "#any-errors")
+          attrHxTargetCustom("500", "#any-errors")
 
           AuthInputs()
 

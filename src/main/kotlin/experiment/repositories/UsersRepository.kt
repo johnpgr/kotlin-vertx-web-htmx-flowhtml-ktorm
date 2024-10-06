@@ -1,33 +1,33 @@
 package experiment.repositories
 
-import experiment.entities.User
-import experiment.entities.users
-import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.entity.add
-import org.ktorm.entity.find
-import org.ktorm.entity.toList
+import experiment.entities.UserEntity
+import experiment.entities.meta.User
+import org.komapper.core.dsl.QueryDsl
+import org.komapper.r2dbc.R2dbcDatabase
 import java.util.*
 
-class UsersRepository(private val database: Database) {
-  fun findAll(): List<User> {
-    return database.users.toList()
-  }
+class UsersRepository(private val database: R2dbcDatabase) {
+  suspend fun findAll(): List<UserEntity> =
+    database.runQuery { QueryDsl.from(User) }
 
-  fun findByUsername(username: String): User? {
-    return database.users.find {
-      it.userName eq username
+  suspend fun findByUsername(username: String): UserEntity? =
+    database.runQuery {
+      QueryDsl.from(User).where { User.name eq username }
+    }.firstOrNull()
+
+  suspend fun findById(id: UUID): UserEntity? =
+    database.runQuery {
+      QueryDsl.from(User).where { User.id eq id }
+    }.firstOrNull()
+
+  suspend fun add(user: UserEntity): UserEntity? {
+    return try {
+      database.runQuery{
+        QueryDsl.insert(User).single(user)
+      }
+    } catch (e: Exception) {
+      null
     }
-  }
-
-  fun findById(id: UUID): User? {
-    return database.users.find {
-      it.id eq id
-    }
-  }
-
-  fun add(user: User): Boolean {
-    return database.users.add(user) == 1
   }
 }
 

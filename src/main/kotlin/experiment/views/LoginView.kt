@@ -1,6 +1,6 @@
 package experiment.views
 
-import experiment.entities.User
+import experiment.entities.UserEntity
 import experiment.utils.attrHxExt
 import experiment.utils.attrHxTargetCustom
 import experiment.views.components.AuthInputs
@@ -10,9 +10,9 @@ import htmlflow.*
 import org.xmlet.htmlapifaster.EnumMethodType
 import org.xmlet.htmlapifaster.EnumTypeButtonType
 
-val LoginView = view<User?> {
+val LoginView = view<UserEntity?> {
   BaseLayout {
-    dyn { user: User? ->
+    dyn { user: UserEntity? ->
       Header(user)
       main {
         attrClass("min-h-[calc(100vh-80px)] w-full flex justify-center items-center")

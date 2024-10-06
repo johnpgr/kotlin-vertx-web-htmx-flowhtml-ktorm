@@ -1,33 +1,35 @@
 package experiment.repositories
 
-import experiment.entities.Post
-import experiment.entities.posts
-import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.entity.add
-import org.ktorm.entity.find
-import org.ktorm.entity.toList
+import experiment.entities.PostEntity
+import experiment.entities.meta.Post
+import org.komapper.core.dsl.QueryDsl
+import org.komapper.r2dbc.R2dbcDatabase
 import java.util.*
 
-class PostsRepository(private val database: Database) {
-  fun findAll(): List<Post> {
-    return database.posts.toList()
-  }
-
-  fun findBySlug(slug: String): Post? {
-    return database.posts.find {
-      it.slug eq slug
+class PostsRepository(private val database: R2dbcDatabase) {
+  suspend fun findAll(): List<PostEntity> =
+    database.runQuery {
+      QueryDsl.from(Post)
     }
-  }
 
-  fun findById(id: UUID): Post? {
-    return database.posts.find {
-      it.id eq id
+  suspend fun findBySlug(slug: String): PostEntity? =
+    database.runQuery {
+      QueryDsl.from(Post).where { Post.slug eq slug }
+    }.firstOrNull()
+
+  suspend fun findById(id: UUID): PostEntity? =
+    database.runQuery {
+      QueryDsl.from(Post).where { Post.id eq id }
+    }.firstOrNull()
+
+  suspend fun add(post: PostEntity): PostEntity? {
+    return try {
+      database.runQuery {
+        QueryDsl.insert(Post).single(post)
+      }
+    } catch (e: Exception) {
+      null
     }
-  }
-
-  fun add(post: Post): Boolean {
-    return database.posts.add(post) == 1
   }
 }
 

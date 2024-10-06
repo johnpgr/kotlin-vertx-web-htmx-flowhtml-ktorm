@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS "user"
 (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_name       VARCHAR NOT NULL UNIQUE,
-    bio             VARCHAR,
-    hashed_password VARCHAR
+    name            VARCHAR(32) NOT NULL UNIQUE,
+    bio             VARCHAR(2000),
+    hashed_password VARCHAR(100)
 );
 CREATE TABLE IF NOT EXISTS "session"
 (
@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS "post"
 (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     author_id   UUID NOT NULL,
-    slug        VARCHAR NOT NULL,
-    title       VARCHAR NOT NULL,
-    description VARCHAR NOT NULL,
-    body        VARCHAR NOT NULL,
+    slug        VARCHAR(255) NOT NULL,
+    title       VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    body        TEXT NOT NULL,
     created_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES "user"(id) ON DELETE CASCADE
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS "comment"
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     post_id     UUID NOT NULL,
     author_id   UUID NOT NULL,
-    body        VARCHAR NOT NULL,
+    body        VARCHAR(2000) NOT NULL,
     created_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES "post"(id) ON DELETE CASCADE,

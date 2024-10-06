@@ -1,14 +1,14 @@
 package experiment.views
 
-import experiment.entities.Post
-import experiment.entities.User
+import experiment.entities.PostEntity
+import experiment.entities.UserEntity
 import experiment.views.components.BaseLayout
 import experiment.views.components.Header
 import experiment.views.components.PostItem
 import htmlflow.*
 
 
-class HomeViewProps(val posts: List<Post>, val user: User?)
+class HomeViewProps(val posts: List<PostEntity>, val user: UserEntity?)
 
 val HomeView = view<HomeViewProps> {
   BaseLayout {

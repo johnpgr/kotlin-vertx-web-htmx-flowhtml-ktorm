@@ -1,10 +1,10 @@
 package experiment.views.components
 
-import experiment.entities.Post
+import experiment.entities.PostEntity
 import htmlflow.*
 import org.xmlet.htmlapifaster.Ul
 
-fun Ul<*>.PostItem(post: Post): Ul<*> {
+fun Ul<*>.PostItem(post: PostEntity): Ul<*> {
   return li {
     attrClass("bg-white shadow rounded-md p-4")
     div {

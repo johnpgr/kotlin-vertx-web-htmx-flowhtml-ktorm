@@ -1,51 +1,47 @@
 package experiment.repositories
 
-import experiment.entities.Session
-import experiment.entities.Sessions
-import experiment.entities.sessions
-import org.ktorm.database.Database
-import org.ktorm.dsl.delete
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.less
-import org.ktorm.entity.add
-import org.ktorm.entity.find
+import experiment.entities.SessionEntity
+import experiment.entities.meta.Session
+import org.komapper.core.dsl.QueryDsl
+import org.komapper.r2dbc.R2dbcDatabase
 import java.time.LocalDateTime
 import java.util.*
 
-class SessionsRepository(private val database: Database) {
-  fun createSession(userId: UUID): Session {
+
+class SessionsRepository(private val database: R2dbcDatabase) {
+  suspend fun createSession(userId: UUID): SessionEntity {
     val token = UUID.randomUUID().toString()
     val now = LocalDateTime.now()
     val expiresAt = now.plusDays(7)
 
-    val session = Session {
-      this.id = UUID.randomUUID()
-      this.userId = userId
-      this.token = token
-      this.createdAt = now
-      this.expiresAt = expiresAt
+    val session = SessionEntity(
+      id = UUID.randomUUID(),
+      userId = userId,
+      token = token,
+      expiresAt = expiresAt,
+      createdAt = now,
+    )
+    val createdSession = database.runQuery {
+      QueryDsl.insert(Session).single(session)
     }
-    database.sessions.add(session)
 
-    return session
+    return createdSession
   }
 
-  fun findByToken(token: String): Session? {
-    return database.sessions.find {
-      it.token eq token
+  suspend fun findByToken(token: String): SessionEntity? =
+    database.runQuery {
+      QueryDsl.from(Session).where { Session.token eq token }
+    }.firstOrNull()
+
+  suspend fun deleteSession(token: String): Boolean =
+    database.runQuery {
+      QueryDsl.delete(Session).where { Session.token eq token }
+    } == 1L
+
+  suspend fun cleanExpiredSessions() =
+    database.runQuery {
+      QueryDsl.delete(Session)
+        .where { Session.expiresAt less LocalDateTime.now() }
     }
-  }
-
-  fun deleteSession(token: String): Boolean {
-    return database.delete(Sessions) {
-      it.token eq token
-    } == 1
-  }
-
-  fun cleanExpiredSessions(): Boolean {
-    return database.delete(Sessions) {
-      it.expiresAt less LocalDateTime.now()
-    } == 1
-  }
 }
 
